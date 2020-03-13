@@ -4,12 +4,14 @@ import { elements, renderLoader, clearLoader } from "./view/base";
 import * as searchView from "./view/searchView";
 import Recipe from "./model/Recipe";
 import List from "./model/List";
+
 import * as listView from "./view/listview";
 import {
   renderRecipe,
   clearRecipe,
   highlightSelectedRecipe
 } from "./view/recipeVeiw";
+import Likes from "./model/like";
 
 /*
  * Web app
@@ -102,9 +104,35 @@ const controlList = () => {
     listView.renderItem(n);
   });
 };
+//// like control
+const controlLike = () => {
+  //// 1. Like modeliig uusgene
+  if (!state.likes) state.likes = new Likes();
+
+  //// 2. Jor like-tai bnuu uguig shalgaj ID g olj abah
+  const currentRecipeId = state.recipe.id;
+  //// 3. Ene joriig like-lsan esehiig shalgah
+  if (state.likes.isLiked(currentRecipeId)) {
+    //// 4. Like lasan bol Like-iig boliulna
+
+    state.likes.deleteLike(currentRecipeId);
+  } else {
+    //// 5. Like-gui bol like -lna
+
+    state.likes.addLike(
+      currentRecipeId,
+      state.recipe.title,
+      state.recipe.publisher,
+      state.recipe.image_url
+    );
+  }
+};
+
 //// Button event listener
 elements.recipeDiv.addEventListener("click", e => {
   if (e.target.matches(".recipe__btn, .recipe__btn * ")) {
     controlList();
+  } else if (e.target.matches(".recipe__love, .recipe__love * ")) {
+    controlLike();
   }
 });
