@@ -3,6 +3,8 @@ import Search from "./model/search";
 import { elements, renderLoader, clearLoader } from "./view/base";
 import * as searchView from "./view/searchView";
 import Recipe from "./model/Recipe";
+import List from "./model/List";
+import * as listView from "./view/listview";
 import {
   renderRecipe,
   clearRecipe,
@@ -61,21 +63,48 @@ Joriin controller
 const controlRecipe = async () => {
   //// 1. URL-aas ID iig salgana
   const id = window.location.hash.replace("#", "");
-  //// 2 Joriin modeliig uusgene
-  state.recipe = new Recipe(id);
-  //// 3 Delgetsend beltgene
+  //// URL deer ID biagaa esehiig shalgana
+  if (id) {
+    //// 2 Joriin modeliig uusgene
+    state.recipe = new Recipe(id);
+    //// 3 Delgetsend beltgene
 
-  clearRecipe();
-  renderLoader(elements.recipeDiv);
-  highlightSelectedRecipe(id);
-  //// 4 Joroo tataj abchirna
-  await state.recipe.getRecipe();
-  //// Joriig guitsetgeh hugatsaa bolon ortsiig tootsoolno
-  clearLoader();
-  state.recipe.calcTime();
-  state.recipe.calcHuniiToo();
-  //// Joroo delgetsend gargana
-  renderRecipe(state.recipe);
+    clearRecipe();
+    renderLoader(elements.recipeDiv);
+    highlightSelectedRecipe(id);
+    //// 4 Joroo tataj abchirna
+    await state.recipe.getRecipe();
+    //// Joriig guitsetgeh hugatsaa bolon ortsiig tootsoolno
+    clearLoader();
+    state.recipe.calcTime();
+    state.recipe.calcHuniiToo();
+    //// Joroo delgetsend gargana
+    renderRecipe(state.recipe);
+  }
 };
-window.addEventListener("hashchange", controlRecipe);
-window.addEventListener("load", controlRecipe);
+// window.addEventListener("hashchange", controlRecipe);
+// window.addEventListener("load", controlRecipe);
+["hashchange", "load"].forEach(e => window.addEventListener(e, controlRecipe));
+
+/*
+Nairlaganii controller
+
+*/
+const controlList = () => {
+  //// Nairlaganii modeliig uusgene
+  state.list = new List();
+  //// CLEAR HIIJ BN
+  listView.clearItems();
+
+  //// Ug model ruu odoo haragdaj baigaa nairlagiig
+  state.recipe.ingredients.forEach(n => {
+    state.list.addItem(n);
+    listView.renderItem(n);
+  });
+};
+//// Button event listener
+elements.recipeDiv.addEventListener("click", e => {
+  if (e.target.matches(".recipe__btn, .recipe__btn * ")) {
+    controlList();
+  }
+});
