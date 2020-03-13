@@ -3,7 +3,11 @@ import Search from "./model/search";
 import { elements, renderLoader, clearLoader } from "./view/base";
 import * as searchView from "./view/searchView";
 import Recipe from "./model/Recipe";
-import { renderRecipe, clearRecipe } from "./view/recipeVeiw";
+import {
+  renderRecipe,
+  clearRecipe,
+  highlightSelectedRecipe
+} from "./view/recipeVeiw";
 
 /*
  * Web app
@@ -63,6 +67,7 @@ const controlRecipe = async () => {
 
   clearRecipe();
   renderLoader(elements.recipeDiv);
+  highlightSelectedRecipe(id);
   //// 4 Joroo tataj abchirna
   await state.recipe.getRecipe();
   //// Joriig guitsetgeh hugatsaa bolon ortsiig tootsoolno
