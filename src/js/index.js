@@ -38,3 +38,12 @@ elements.searchForm.addEventListener("submit", e => {
   e.preventDefault();
   controlSearch();
 });
+elements.pageButtons.addEventListener("click", e => {
+  const btn = e.target.closest(".btn-inline");
+  if (btn) {
+    //// html -iin DATA-GOTO gesen medeelelees toog gargaj abch bn
+    const gotoPageNumber = parseInt(btn.dataset.goto);
+    searchView.clearSearchResult();
+    searchView.renderRecipes(state.search.result, gotoPageNumber);
+  }
+});
