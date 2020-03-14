@@ -12,6 +12,7 @@ import {
   highlightSelectedRecipe
 } from "./view/recipeVeiw";
 import Likes from "./model/like";
+import * as LikesView from "./view/LikesView";
 
 /*
  * Web app
@@ -24,6 +25,8 @@ import Likes from "./model/like";
  *
  */
 const state = {};
+//// Like zurhiig haah
+LikesView.toggleLikeMenu(0);
 const controlSearch = async () => {
   //// 1. Web-ees hailtiin tulhuur ugiig gargaj abna
   const query = searchView.getInput();
@@ -65,6 +68,7 @@ Joriin controller
 const controlRecipe = async () => {
   //// 1. URL-aas ID iig salgana
   const id = window.location.hash.replace("#", "");
+  if (!state.likes) state.likes = new Likes();
   //// URL deer ID biagaa esehiig shalgana
   if (id) {
     //// 2 Joriin modeliig uusgene
@@ -81,7 +85,7 @@ const controlRecipe = async () => {
     state.recipe.calcTime();
     state.recipe.calcHuniiToo();
     //// Joroo delgetsend gargana
-    renderRecipe(state.recipe);
+    renderRecipe(state.recipe, state.likes.isLiked(id));
   }
 };
 // window.addEventListener("hashchange", controlRecipe);
@@ -116,16 +120,23 @@ const controlLike = () => {
     //// 4. Like lasan bol Like-iig boliulna
 
     state.likes.deleteLike(currentRecipeId);
+    //// Haragdaj baigaa like-iig tsesnees ustgana
+    LikesView.deleteLike(currentRecipeId);
+    //// Like btn haragdah baidliig boliulah
+    LikesView.toggleLikeBtn(false);
   } else {
     //// 5. Like-gui bol like -lna
 
-    state.likes.addLike(
+    const newLike = state.likes.addLike(
       currentRecipeId,
       state.recipe.title,
       state.recipe.publisher,
       state.recipe.image_url
     );
+    LikesView.renderLike(newLike);
+    LikesView.toggleLikeBtn(true);
   }
+  LikesView.toggleLikeMenu(state.likes.getNumberOfLikes());
 };
 
 //// Button event listener
